@@ -10,7 +10,6 @@ Defines rules for backend services:
 * Use `Vertx.builder()` to compose the runtime.
 * Avoid use of `deployVerticle` directly from `main`; use `Launcher` pattern or `MainVerticle`.
 * Avoid Vert.x codegen usage; prefer manually defined types/interfaces.
-* Object validation must use standard Java + Vert.x (e.g., `javax.validation`, `ValidationHandler`). Hibernate Validator should not be used until modular support matures.
 * Use `vertx-health-check` module for per-resource health checks. Health endpoints must reflect internal dependencies including:
 
   * Database connectivity

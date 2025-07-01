@@ -9,7 +9,7 @@ The AI Experiment uses an event-driven architecture with microservices and micro
 ## Backend-to-Backend Integration
 
 1. Define clear service boundaries
-2. Use event-driven communication via message brokers
+2. Use event-driven communication as per [integration-tcp-evenetbus-bridge.md](integration-tcp-evenetbus-bridge.md)
 3. Implement resilient communication patterns
 4. Set up distributed tracing
 

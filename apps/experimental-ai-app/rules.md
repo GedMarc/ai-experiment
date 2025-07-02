@@ -45,6 +45,55 @@ This file defines the platform-level rules for the `ExperimentalAIApp`, which fu
 
 ---
 
+## Micro Frontend Integration Rules
+
+### Role
+
+The ExperimentalAIApp acts as the **host shell** for dynamically mounted micro frontends (MFEs). It provides routing, slot-based layout composition, and runtime configuration propagation.
+
+### Mounting Strategy
+
+* MFEs must expose:
+
+  * `rules.md`
+  * `openapi.md`
+  * `frontend-implementation.md`
+  * `env-variables.md`
+* Shell queries build manifest and dynamically registers apps based on declared route prefix
+* Loaded apps are expected to use path-based routing (e.g., `/calc`, `/wallet`)
+* MFEs must not override or conflict with root-level paths
+
+### Layout Composition
+
+* Shell defines the following standard slot regions:
+
+  * `app-header`
+  * `sidebar`
+  * `main-content`
+  * `app-footer`
+* MFEs must declare required slot usage in their `rules.md`
+
+### Environment and Configuration Injection
+
+* Shell reads global `orchestration/env-variables.md` and propagates merged values to each MFE
+* Injected configuration includes:
+
+  * `BASE_API_URL`
+  * `AUTH_TOKEN`
+  * `SHARED_CONFIG` (flat map)
+* MFEs must read from provided config source or service
+
+### Lifecycle Events and Logging
+
+* MFEs must emit lifecycle and diagnostic events:
+
+  * Mount success/failure
+  * Slot injection duration
+  * Route handover
+* Logging must conform to the shared Vert.x event bus format
+
+---
+
 ## Build & Deployment
 
 * Only modules explicitly included in environment builds are loaded
@@ -68,3 +117,43 @@ This file defines the platform-level rules for the `ExperimentalAIApp`, which fu
 
 ---
 
+## Micro Frontend Compliance Checklist
+
+* [ ] Has `rules.md` describing layout and routing slot expectations
+* [ ] Has `openapi.md` with UI and API contract mapping
+* [ ] Declares required `env-variables.md`
+* [ ] Emits lifecycle and health events to shell logger
+* [ ] Complies with layout and routing injection boundaries
+
+---
+
+## Known Gaps and Evolution Areas
+
+* Future micro frontends may require capability discovery via schema rather than manifest
+* Slot regions may need support for nested layouts or tab-based navigation containers
+* Cross-app session sync and auth propagation will be formalized in `security-authentication.md`
+* Component-level shadow DOM styling coordination may require additional ruleset
+
+## Appendix
+
+### Example MFE Declaration
+
+```ts
+{
+  name: "basic-calculator",
+  routePrefix: "/calc",
+  slotsUsed: ["main-content"],
+  requiredEnv: ["BASE_API_URL", "SHARED_CONFIG"],
+  openapi: "apps/basic-calculator/openapi.md"
+}
+```
+
+### Example Shell Injection Flow
+
+1. Parse `orchestration/env-variables.md`
+2. Resolve `build.manifest`
+3. Register MFE routes
+4. Inject config and mount
+5. Await lifecycle handshake
+
+---

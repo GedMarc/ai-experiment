@@ -71,6 +71,17 @@ jobs:
           java-version: ${{ env.JAVA_VERSION }}
           distribution: 'temurin'
           cache: maven
+      - name: Configure Maven settings.xml
+        uses: whelk-io/maven-settings-xml-action@v22
+        with:
+          servers: >-
+            [
+              {
+                "id": "github", 
+                "username": "${{ secrets.GITHUB_ACTOR }}", 
+                "password": "${{ secrets.GITHUB_TOKEN }}"
+              }
+            ]
 
       - name: Build with Maven
         run: |

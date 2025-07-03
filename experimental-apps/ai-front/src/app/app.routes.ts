@@ -1,22 +1,11 @@
 import { Routes } from '@angular/router';
-import { AuthGuard } from './services/auth.guard';
+import { inject } from '@angular/core';
+import { RouteService } from './services/route.service';
 
-export const routes: Routes = [
-  { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-  { 
-    path: 'dashboard', 
-    loadComponent: () => import('./pages/dashboard/dashboard.component').then(m => m.DashboardComponent),
-    canActivate: [AuthGuard]
-  },
-  { 
-    path: 'ai-tools', 
-    loadComponent: () => import('./pages/ai-tools/ai-tools.component').then(m => m.AIToolsComponent),
-    canActivate: [AuthGuard]
-  },
-  { 
-    path: 'settings', 
-    loadComponent: () => import('./pages/settings/settings.component').then(m => m.SettingsComponent),
-    canActivate: [AuthGuard]
-  },
-  { path: '**', redirectTo: 'dashboard' }
-];
+// Use a factory function to generate routes dynamically
+export const routes: Routes = (() => {
+  // This will be executed during app initialization
+  // We can't use DI directly here, so we use the inject function
+  const routeService = inject(RouteService);
+  return routeService.generateRoutes();
+})();

@@ -5,5 +5,5 @@ export const environment = {
     clientId: 'ai-front',
     redirectUri: window.location.origin
   },
-  enabledModules: ['dashboard', 'settings']
+  enabledModules: []
 };

@@ -9,7 +9,7 @@ This shell application hosts all available micro frontends via dynamic menu inte
 ## 🗂️ Structure
 
 ```
-apps/experimental-ai-app-frontend/
+experimental-apps/frontend/
 ├── src/app/
 │   ├── app.component.ts
 │   ├── app.component.html

@@ -104,16 +104,28 @@ All secrets below should be provisioned using:
 
 ## ✅ Rules
 
+* Where possible, environment variable types and required presence should be validated via runtime schema enforcement (e.g., Vert.x ConfigRetriever JSON schema validation or custom startup checks).
+
 * All keys must be prefixed consistently (`JWT_`, `POSTGRES_`, `OAUTH2_`, etc.)
+
 * Terraform must be the canonical source of truth for variable injection
+
 * Dev defaults should be supplied for local `.env` usage
+
 * GitHub Actions will mount secrets as environment variables at runtime
+
 * Dockerfile `ENV` values can be overridden by container runtime injection (Cloud Run or `docker-compose`)
+
 * Public-facing services must validate tokens via `JWKS_URI` or `INTROSPECTION_URL`
+
 * `.env.example` must **always** match `.env` keys
+
 * Terraform modules should validate required secrets via input variables
+
 * GitHub Actions must consume secrets from repository/environment scope
+
 * Cloud Build substitutions (`_VAR_NAME`) must be defined per trigger
+
 * Docker Compose should pull from `.env` or inline `env_file:` reference
 
 ---

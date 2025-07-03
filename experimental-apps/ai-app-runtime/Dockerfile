@@ -2,22 +2,23 @@
 FROM alpine:latest
 
 # Install necessary dependencies for running JLink applications
-RUN apk add --no-cache libc6-compat libstdc++ zlib
+RUN apk add --no-cache libc6-compat libstdc++ zlib unzip
 
 # Set working directory
 WORKDIR /app
 
-# Copy the JLink image
-COPY target/jlink-image /app/jlink-image
+# Copy and extract the JLink zip file
+COPY target/*.zip /app/
+RUN unzip -o /app/*.zip && rm /app/*.zip
 
 # Environment variables
 ENV APP_HOME=/app \
     JAVA_OPTS="" \
-    PORT=8080 \
+    PORT=${PORT} \
     STARTUP_CPU_BOOST=true
 
 # Expose the port
 EXPOSE ${PORT}
 
-# Set the entrypoint
-ENTRYPOINT ["/app/jlink-image/bin/ai-app"]
+# Set the entrypoint to open a shell
+ENTRYPOINT ["/app/bin/ai-app"]

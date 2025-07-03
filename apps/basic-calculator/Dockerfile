@@ -7,8 +7,13 @@ RUN apk add --no-cache libc6-compat libstdc++ zlib
 # Set working directory
 WORKDIR /app
 
-# Copy the JLink image
-COPY target/jlink-image /app/jlink-image
+# Copy and extract the JLink zip file
+COPY target/maven-jlink/*.zip /tmp/jlink-runtime.zip
+RUN unzip /tmp/jlink-runtime.zip -d /app && \
+    rm /tmp/jlink-runtime.zip && \
+    chmod +x /app/bin/* && \
+    find /app -type f -name "*.so" -exec chmod +x {} \; && \
+    find /app -type f -name "java" -exec chmod +x {} \;
 
 # Environment variables
 ENV APP_HOME=/app \
@@ -19,4 +24,4 @@ ENV APP_HOME=/app \
 EXPOSE ${PORT}
 
 # Set the entrypoint
-ENTRYPOINT ["/app/jlink-image/bin/basic-calculator"]
+ENTRYPOINT ["/app/bin/basic-calculator"]

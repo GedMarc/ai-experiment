@@ -1,5 +1,8 @@
-# Use the JLink image as the base
-FROM eclipse-temurin:24-jre-alpine AS runtime
+# Use the smallest secure base image
+FROM alpine:latest
+
+# Install necessary dependencies for running JLink applications
+RUN apk add --no-cache libc6-compat libstdc++ zlib
 
 # Set working directory
 WORKDIR /app

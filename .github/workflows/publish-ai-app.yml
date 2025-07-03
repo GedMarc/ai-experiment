@@ -1,0 +1,217 @@
+name: Build and Deploy AI App
+
+on:
+  push:
+    branches:
+      - main
+      - qe
+      - prod
+    paths:
+      - 'experimental-apps/ai-app/**'
+      - 'experimental-apps/ai-app-runtime/**'
+      - '.github/workflows/publish-ai-app.yml'
+  pull_request:
+    branches:
+      - main
+      - qe
+      - prod
+    paths:
+      - 'experimental-apps/ai-app/**'
+      - 'experimental-apps/ai-app-runtime/**'
+      - '.github/workflows/publish-ai-app.yml'
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+          - dev
+          - qe
+          - prod
+
+env:
+  JAVA_VERSION: '24'
+  MAVEN_OPTS: '-Xmx3200m'
+
+jobs:
+  determine_environment:
+    name: Determine Environment
+    runs-on: ubuntu-latest
+    outputs:
+      environment: ${{ steps.set-env.outputs.environment }}
+    steps:
+      - name: Set environment based on branch or input
+        id: set-env
+        run: |
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            echo "environment=${{ github.event.inputs.environment }}" >> $GITHUB_OUTPUT
+          elif [ "${{ github.ref }}" == "refs/heads/main" ]; then
+            echo "environment=dev" >> $GITHUB_OUTPUT
+          elif [ "${{ github.ref }}" == "refs/heads/qe" ]; then
+            echo "environment=qe" >> $GITHUB_OUTPUT
+          elif [ "${{ github.ref }}" == "refs/heads/prod" ]; then
+            echo "environment=prod" >> $GITHUB_OUTPUT
+          else
+            echo "environment=dev" >> $GITHUB_OUTPUT
+          fi
+
+  build:
+    name: Build and Test
+    runs-on: ubuntu-latest
+    needs: determine_environment
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Build with Maven
+        run: |
+          cd experimental-apps/ai-app
+          mvn -B package --file pom.xml
+
+      - name: Run tests
+        run: |
+          cd experimental-apps/ai-app
+          mvn -B test --file pom.xml
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: ai-app-artifacts
+          path: |
+            experimental-apps/ai-app/target/*.jar
+          retention-days: 5
+
+  jlink_build:
+    name: Build JLink Runtime Image
+    runs-on: ubuntu-latest
+    needs: [determine_environment, build]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: ai-app-artifacts
+          path: experimental-apps/ai-app/target/
+
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Build JLink image
+        run: |
+          cd experimental-apps/ai-app-runtime
+          mvn -B package --file pom.xml
+
+      - name: Upload JLink image
+        uses: actions/upload-artifact@v3
+        with:
+          name: ai-app-jlink-image
+          path: |
+            experimental-apps/ai-app-runtime/target/jlink-image
+          retention-days: 5
+
+  docker_build:
+    name: Build Docker Image
+    runs-on: ubuntu-latest
+    needs: [determine_environment, jlink_build]
+    env:
+      ENVIRONMENT: ${{ needs.determine_environment.outputs.environment }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Download JLink image
+        uses: actions/download-artifact@v3
+        with:
+          name: ai-app-jlink-image
+          path: experimental-apps/ai-app-runtime/target/jlink-image
+
+      - name: Set up Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v1
+        with:
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          export_default_credentials: true
+
+      - name: Configure Docker for Artifact Registry
+        run: |
+          gcloud auth configure-docker ${{ secrets.REGION }}-docker.pkg.dev
+
+      - name: Build and push Docker image
+        env:
+          REGISTRY: ${{ secrets.REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.ARTIFACT_REGISTRY_REPO }}
+        run: |
+          cd experimental-apps/ai-app-runtime
+          IMAGE_TAG="${REGISTRY}/ai-app:${ENVIRONMENT}-$(date +'%Y%m%d%H%M%S')"
+          docker build -t ${IMAGE_TAG} .
+          docker push ${IMAGE_TAG}
+          echo "IMAGE_TAG=${IMAGE_TAG}" >> $GITHUB_ENV
+
+  deploy:
+    name: Deploy to Cloud Run
+    runs-on: ubuntu-latest
+    needs: [determine_environment, docker_build]
+    env:
+      ENVIRONMENT: ${{ needs.determine_environment.outputs.environment }}
+    steps:
+      - name: Set up Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v1
+        with:
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          export_default_credentials: true
+
+      - name: Deploy to Cloud Run
+        env:
+          REGISTRY: ${{ secrets.REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.ARTIFACT_REGISTRY_REPO }}
+        run: |
+          # Get the latest image tag for this service and environment
+          IMAGE_TAG=$(gcloud artifacts docker images list ${REGISTRY}/ai-app --filter="tags~${ENVIRONMENT}" --format="value(IMAGE_PATH)" | head -n 1)
+          
+          if [ -n "${IMAGE_TAG}" ]; then
+            # Deploy to Cloud Run
+            gcloud run deploy ai-app-${ENVIRONMENT} \
+              --image=${IMAGE_TAG} \
+              --region=${{ secrets.REGION }} \
+              --platform=managed \
+              --allow-unauthenticated \
+              --set-env-vars="ENVIRONMENT=${ENVIRONMENT},TRACING_ENABLED=true,GCP_TRACE_EXPORT=true,LOGGING_BACKEND=cloud-logging,METRICS_EXPORT=enabled,SERVICE_NAME=ai-app" \
+              --cpu=1 \
+              --memory=512Mi \
+              --cpu-boost \
+              --vpc-connector=projects/${{ secrets.GCP_PROJECT_ID }}/locations/${{ secrets.REGION }}/connectors/${{ secrets.GCP_PROJECT_ID }}-vpc-connector
+            
+            echo "Deployed ai-app to ${ENVIRONMENT} environment"
+          else
+            echo "No image found for ai-app in ${ENVIRONMENT} environment"
+          fi
+
+  notify:
+    name: Notify Deployment Status
+    runs-on: ubuntu-latest
+    needs: [determine_environment, deploy]
+    env:
+      ENVIRONMENT: ${{ needs.determine_environment.outputs.environment }}
+    if: always()
+    steps:
+      - name: Deployment Status
+        run: |
+          if [ "${{ needs.deploy.result }}" == "success" ]; then
+            echo "✅ Deployment to ${ENVIRONMENT} environment was successful!"
+          else
+            echo "❌ Deployment to ${ENVIRONMENT} environment failed!"
+          fi

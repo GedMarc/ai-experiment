@@ -1,0 +1,23 @@
+{
+  "hostFeatures": {
+    "scopeToHost": true,
+    "shadowDom": true,
+    "viewEncapsulation": "ShadowDom",
+    "customElementExport": true
+  },
+  "componentConfig": {
+    "prefix": "expai",
+    "styleExt": "scss",
+    "standalone": true,
+    "changeDetection": "OnPush"
+  },
+  "buildConfig": {
+    "webComponents": {
+      "enabled": true,
+      "exportToCustomElements": true,
+      "includePolyfills": true
+    },
+    "outputHashing": "all",
+    "optimization": true
+  }
+}

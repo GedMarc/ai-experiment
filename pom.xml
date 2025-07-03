@@ -14,6 +14,7 @@
 
     <modules>
         <module>experimental-apps/ai-app</module>
+        <module>experimental-apps/ai-app-runtime</module>
         <module>apps/basic-calculator</module>
         <module>apps/basic-calculator-runtime</module>
         <module>apps/advanced-calculator</module>
@@ -211,18 +212,18 @@
         </repository>
     </distributionManagement>
 
-    <repositories>
-        <repository>
-            <id>aiexperiment</id>
-            <name>aiexperiment</name>
-            <url>https://maven.pkg.github.com/GedMarc/ai-experiment</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
+<!--    <repositories>-->
+<!--        <repository>-->
+<!--            <id>aiexperiment</id>-->
+<!--            <name>aiexperiment</name>-->
+<!--            <url>https://maven.pkg.github.com/GedMarc/ai-experiment</url>-->
+<!--            <releases>-->
+<!--                <enabled>true</enabled>-->
+<!--            </releases>-->
+<!--            <snapshots>-->
+<!--                <enabled>true</enabled>-->
+<!--            </snapshots>-->
+<!--        </repository>-->
+<!--    </repositories>-->
 
 </project>

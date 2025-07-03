@@ -1,0 +1,125 @@
+// Variables
+$primary-color: #3f51b5;
+$secondary-color: #ff4081;
+$background-color: #f5f5f5;
+$text-color: #333;
+$drawer-width: 250px;
+$topnav-height: 64px;
+
+// Global styles
+.app-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color: $background-color;
+}
+
+// Top Navigation Bar
+.topnav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: $topnav-height;
+  background-color: $primary-color;
+  color: white;
+  padding: 0 16px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+
+  .topnav-left {
+    display: flex;
+    align-items: center;
+    
+    .menu-button {
+      background: none;
+      border: none;
+      color: white;
+      margin-right: 16px;
+      cursor: pointer;
+      
+      .material-icons {
+        font-size: 24px;
+      }
+    }
+    
+    .app-title {
+      margin: 0;
+      font-size: 20px;
+      font-weight: 500;
+    }
+  }
+  
+  .topnav-right {
+    .user-button {
+      background: none;
+      border: none;
+      color: white;
+      cursor: pointer;
+      
+      .material-icons {
+        font-size: 24px;
+      }
+    }
+  }
+}
+
+// Content container
+.content-container {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+// Side Drawer
+.drawer {
+  width: 0;
+  background-color: white;
+  box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1);
+  transition: width 0.3s ease;
+  overflow: hidden;
+  
+  &.open {
+    width: $drawer-width;
+  }
+  
+  .drawer-nav {
+    width: $drawer-width;
+    
+    .nav-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      
+      .nav-item {
+        .nav-link {
+          display: flex;
+          align-items: center;
+          padding: 16px;
+          color: $text-color;
+          text-decoration: none;
+          transition: background-color 0.2s;
+          
+          &:hover, &.active {
+            background-color: rgba($primary-color, 0.1);
+          }
+          
+          .material-icons {
+            margin-right: 16px;
+            color: $primary-color;
+          }
+          
+          .nav-text {
+            font-size: 16px;
+          }
+        }
+      }
+    }
+  }
+}
+
+// Main Content
+.main-content {
+  flex: 1;
+  padding: 24px;
+  overflow-y: auto;
+}

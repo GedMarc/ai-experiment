@@ -24,7 +24,7 @@ This guide defines the canonical rules and expectations for generating, publishi
     <path>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok-mapstruct-binding</artifactId>
-      <version>0.0.1</version>
+      <version>0.2.0</version>
     </path>
     ```
 
@@ -121,7 +121,7 @@ Root `pom.xml` should include:
 
   * `log4j2`
   * `lombok` (1.18.38+)
-  * `jackson-databind` (2.18.3)
+  * `jackson-databind` (2.19.0)
   * `mapstruct` (1.6.3)
   * `lombok-mapstruct-binding` (0.0.1, if applicable)
 * Managed via `<dependencyManagement>`

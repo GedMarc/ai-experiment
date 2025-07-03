@@ -13,10 +13,11 @@ COPY target/jlink-image /app/jlink-image
 # Environment variables
 ENV APP_HOME=/app \
     JAVA_OPTS="" \
-    PORT=8080
+    PORT=8080 \
+    STARTUP_CPU_BOOST=true
 
 # Expose the port
 EXPOSE ${PORT}
 
 # Set the entrypoint
-ENTRYPOINT ["/app/jlink-image/bin/advanced-calculator"]
+ENTRYPOINT ["/app/jlink-image/bin/ai-app"]

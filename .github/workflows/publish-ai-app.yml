@@ -60,6 +60,7 @@ jobs:
   build:
     name: Build and Test
     runs-on: ubuntu-latest
+    environment: dev
     needs: determine_environment
     steps:
       - name: Checkout code
@@ -74,7 +75,7 @@ jobs:
       - name: Configure Maven settings.xml
         uses: whelk-io/maven-settings-xml-action@v22
         with:
-          servers: '[{ "id": "github", "username": "${{ secrets.GITHUB_ACTOR }}", "password": "${{ secrets.GITHUB_TOKEN }}" }]'
+          servers: '[{ "id": "github", "username": "${{ secrets.GH_ACTOR }}", "password": "${{ secrets.GH_TOKEN }}" }]'
 
       - name: Build with Maven
         run: |

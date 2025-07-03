@@ -4,7 +4,7 @@ This document defines the foundational metadata, repository structure, GCP layou
 
 ---
 
-## 🗂️ GitHub Configuration
+## 📂️ GitHub Configuration
 
 | Field           | Value                       |
 | --------------- | --------------------------- |
@@ -58,6 +58,7 @@ This document defines the foundational metadata, repository structure, GCP layou
 * Uses PostgreSQL 17 (10GB) with Keycloak schema
 * Memory allocation: **2 GB**
 * Cloud Run CPU boost enabled for cold start reliability
+* Public access via IAM: `allUsers` with `Cloud Run Invoker` role
 
 #### 🔧 Full Build + Run Image
 
@@ -93,9 +94,18 @@ ENV KC_FEATURES=token-exchange
 ENTRYPOINT ["/opt/keycloak/bin/kc.sh", "start"]
 ```
 
+#### 💡 GCP Annotation for Cold Start
+
+```yaml
+annotations:
+  run.googleapis.com/startup-cpu-boost: 'true'
+```
+
+> This annotation should be applied to **all services** for better cold start performance.
+
 ---
 
-## 🗖️ Event & Messaging Structure
+## 🗆️ Event & Messaging Structure
 
 * All internal service-to-service events will use **CloudEvents v1.0** compliant structure
 * Format: `application/cloudevents+json`
@@ -129,7 +139,7 @@ The following CloudEvents extensions are supported and required for internal tra
 
 ---
 
-## 🗖️ Maven Build Conventions
+## 🗆️ Maven Build Conventions
 
 | Field              | Value                              |
 | ------------------ | ---------------------------------- |
@@ -158,3 +168,5 @@ The following CloudEvents extensions are supported and required for internal tra
 * Domain mapping will be applied *after* Cloud Run deployment completes successfully
 * Internal app communication must be secure, use VPC or Auth headers, and rely on CloudEvent format
 * CloudEvents must include traceability extensions for platform observability
+* All Cloud Run services should apply `run.googleapis.com/startup-cpu-boost: 'true'` for optimal cold start behavior
+* Keycloak should be publicly accessible for auth workflows via IAM: `allUsers → Cloud Run Invoker`

@@ -1,0 +1,64 @@
+name: Publish advanced-calculator
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'apps/advanced-calculator/**'
+      - 'apps/advanced-calculator-runtime/**'
+      - '.github/workflows/publish-advanced-calculator.yml'
+  workflow_dispatch:
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Set up JDK 24
+        uses: actions/setup-java@v3
+        with:
+          java-version: '24'
+          distribution: 'temurin'
+          cache: maven
+          server-id: github
+          server-username: GITHUB_ACTOR
+          server-password: GITHUB_TOKEN
+
+      - name: Build and test with Maven
+        run: mvn -B clean verify -pl apps/advanced-calculator -am
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build JLink runtime image
+        run: mvn -B clean package -pl apps/advanced-calculator-runtime -am
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Login to Google Artifact Registry
+        uses: docker/login-action@v2
+        with:
+          registry: europe-west1-docker.pkg.dev
+          username: _json_key
+          password: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Copy JLink image to expected location
+        run: |
+          mkdir -p apps/advanced-calculator/target
+          cp -r apps/advanced-calculator-runtime/target/jlink-image apps/advanced-calculator/target/
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: apps/advanced-calculator
+          push: true
+          tags: europe-west1-docker.pkg.dev/za-ai-experiment/apps/advanced-calculator:latest

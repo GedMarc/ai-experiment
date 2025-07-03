@@ -6,6 +6,51 @@ $text-color: #333;
 $drawer-width: 250px;
 $topnav-height: 64px;
 
+// Login Page Styles
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: $background-color;
+}
+
+.login-card {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 40px;
+  text-align: center;
+  max-width: 400px;
+  width: 100%;
+
+  h1 {
+    color: $primary-color;
+    margin-bottom: 20px;
+    font-size: 24px;
+  }
+
+  p {
+    color: $text-color;
+    margin-bottom: 30px;
+  }
+
+  .login-button {
+    background-color: $primary-color;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 12px 24px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+
+    &:hover {
+      background-color: darken($primary-color, 10%);
+    }
+  }
+}
+
 // Global styles
 .app-container {
   display: flex;
@@ -29,33 +74,33 @@ $topnav-height: 64px;
   .topnav-left {
     display: flex;
     align-items: center;
-    
+
     .menu-button {
       background: none;
       border: none;
       color: white;
       margin-right: 16px;
       cursor: pointer;
-      
+
       .material-icons {
         font-size: 24px;
       }
     }
-    
+
     .app-title {
       margin: 0;
       font-size: 20px;
       font-weight: 500;
     }
   }
-  
+
   .topnav-right {
     .user-button {
       background: none;
       border: none;
       color: white;
       cursor: pointer;
-      
+
       .material-icons {
         font-size: 24px;
       }
@@ -77,19 +122,19 @@ $topnav-height: 64px;
   box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1);
   transition: width 0.3s ease;
   overflow: hidden;
-  
+
   &.open {
     width: $drawer-width;
   }
-  
+
   .drawer-nav {
     width: $drawer-width;
-    
+
     .nav-list {
       list-style: none;
       padding: 0;
       margin: 0;
-      
+
       .nav-item {
         .nav-link {
           display: flex;
@@ -98,16 +143,16 @@ $topnav-height: 64px;
           color: $text-color;
           text-decoration: none;
           transition: background-color 0.2s;
-          
+
           &:hover, &.active {
             background-color: rgba($primary-color, 0.1);
           }
-          
+
           .material-icons {
             margin-right: 16px;
             color: $primary-color;
           }
-          
+
           .nav-text {
             font-size: 16px;
           }

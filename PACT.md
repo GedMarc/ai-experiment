@@ -28,5 +28,6 @@ A reference-grade, language-agnostic architecture combining:
 
 * GCP-native (Cloud Run, Cloud Build, Artifact Registry, private VPC)
 * Java 24+ with JPMS, Vert.x 5, Hibernate Reactive, PostgreSQL 17
+  * Test modules must export their packages to JUnit platform modules (e.g., `exports package.name to org.junit.platform.commons`)
 * Angular 20 with W3C Web Components
 * Terraform infrastructure, GitHub Actions CI/CD, SonarQube, and test-first development

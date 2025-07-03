@@ -1,37 +1,17 @@
-<div class="app-container">
-  <!-- Top Navigation Bar -->
-  <header class="topnav">
-    <div class="topnav-left">
-      <button class="menu-button" (click)="toggleDrawer()">
-        <span class="material-icons">menu</span>
-      </button>
-      <h1 class="app-title">{{ title }}</h1>
-    </div>
-    <div class="topnav-right">
-      <button class="user-button">
-        <span class="material-icons">account_circle</span>
-      </button>
-    </div>
-  </header>
-
-  <div class="content-container">
-    <!-- Side Drawer -->
-    <aside class="drawer" [class.open]="isDrawerOpen">
-      <nav class="drawer-nav">
-        <ul class="nav-list">
-          <li *ngFor="let item of navItems" class="nav-item">
-            <a [routerLink]="item.route" routerLinkActive="active" class="nav-link">
-              <span class="material-icons">{{ item.icon }}</span>
-              <span class="nav-text">{{ item.name }}</span>
-            </a>
-          </li>
-        </ul>
-      </nav>
-    </aside>
-
-    <!-- Main Content Area -->
-    <main class="main-content">
-      <router-outlet></router-outlet>
-    </main>
-  </div>
+<div *ngIf="isAuthenticated$ | async; else loginTemplate">
+  <wa-page>
+    <wa-header slot="header"></wa-header>
+    <wa-sidebar slot="sidebar"></wa-sidebar>
+    <wa-main slot="main"></wa-main>
+  </wa-page>
 </div>
+
+<ng-template #loginTemplate>
+  <div class="login-container">
+    <div class="login-card">
+      <h1>Junie Prompt — AI Shell Frontend</h1>
+      <p>Please log in to continue</p>
+      <button class="login-button" (click)="login()">Login</button>
+    </div>
+  </div>
+</ng-template>

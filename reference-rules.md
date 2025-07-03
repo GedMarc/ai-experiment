@@ -103,6 +103,11 @@ The project uses the following coordinates:
 **JPMS Naming**:
 * Source: `za.co.ai.experiment.<module>`
 * Test: `za.co.ai.experiment.<module>.tests`
+  * Test modules must export and open their packages to JUnit platform modules:
+  ```
+  exports za.co.ai.experiment.<module>.tests to org.junit.platform.commons;
+  opens za.co.ai.experiment.<module>.tests to org.junit.platform.commons;
+  ```
 
 #### GitHub Packages Publishing
 

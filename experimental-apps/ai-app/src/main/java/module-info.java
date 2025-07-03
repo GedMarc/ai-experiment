@@ -16,7 +16,7 @@ module za.co.ai.experiment.ai.app {
     requires java.logging;
     requires io.vertx.core;
     // Jakarta Inject is required but handled through classpath
-    // requires jakarta.inject;
+    requires jakarta.inject;
 
     // For JSON processing
     requires com.fasterxml.jackson.databind;
@@ -25,7 +25,7 @@ module za.co.ai.experiment.ai.app {
     requires org.apache.logging.log4j;
 
     // For mapping
-    requires org.mapstruct;
+    requires static org.mapstruct;
 
     // For Lombok
     requires static lombok;

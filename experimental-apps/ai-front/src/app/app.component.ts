@@ -1,33 +1,39 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {RouterLink, RouterOutlet} from '@angular/router';
+import { Observable } from 'rxjs';
+
+import { AuthService } from './services/auth.service';
+import { WaPageComponent } from './components/wa-page/wa-page.component';
+import { WaHeaderComponent } from './components/wa-header/wa-header.component';
+import { WaSidebarComponent } from './components/wa-sidebar/wa-sidebar.component';
+import { WaMainComponent } from './components/wa-main/wa-main.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, RouterLink],
+  imports: [
+    CommonModule,
+    WaPageComponent,
+    WaHeaderComponent,
+    WaSidebarComponent,
+    WaMainComponent
+  ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
-  title = 'AI Application';
-  isDrawerOpen = false;
-  
-  // Navigation items
-  navItems = [
-    { name: 'Dashboard', route: '/dashboard', icon: 'dashboard' },
-    { name: 'AI Tools', route: '/ai-tools', icon: 'psychology' },
-    { name: 'Settings', route: '/settings', icon: 'settings' }
-  ];
+  isAuthenticated$: Observable<boolean>;
 
-  constructor() {}
+  constructor(private authService: AuthService) {
+    this.isAuthenticated$ = this.authService.isAuthenticated();
+  }
 
   ngOnInit(): void {
     // Initialize application
-    console.log('AI Application initialized');
+    console.log('AI Shell Frontend initialized');
   }
 
-  toggleDrawer(): void {
-    this.isDrawerOpen = !this.isDrawerOpen;
+  login(): void {
+    this.authService.login();
   }
 }

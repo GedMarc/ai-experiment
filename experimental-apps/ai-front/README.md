@@ -53,7 +53,7 @@ The application uses the following environment variables:
 The application is built and deployed using GitHub Actions:
 
 1. On push to main branch, the workflow is triggered
-2. Node.js environment is set up
+2. Node.js environment (version 22.17 or higher) is set up
 3. Dependencies are installed
 4. Application is built for production
 5. Docker image is built and pushed to GCP Artifact Registry
@@ -76,6 +76,7 @@ The application is deployed to Cloud Run with the following settings:
 ## Technical Details
 
 - **Framework**: Angular 20
+- **Node.js**: Version 22.17 or higher required
 - **Styling**: Native HTML (no external CSS frameworks)
 - **Forms**: Template-driven using [(ngModel)]
 - **Routing**: Angular Router with lazy loading

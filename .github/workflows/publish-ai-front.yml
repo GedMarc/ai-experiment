@@ -16,48 +16,48 @@ env:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
-      
+
     - name: Set up Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: '20'
+        node-version: '22.17'
         cache: 'npm'
         cache-dependency-path: experimental-apps/ai-front/package-lock.json
-        
+
     - name: Install dependencies
       run: |
         cd experimental-apps/ai-front
         npm ci
-        
+
     - name: Build Angular app
       run: |
         cd experimental-apps/ai-front
         npm run build
-        
+
     - name: Set up Cloud SDK
       uses: google-github-actions/setup-gcloud@v2
       with:
         project_id: ${{ env.PROJECT_ID }}
-        
+
     - name: Authenticate to Google Cloud
       uses: google-github-actions/auth@v2
       with:
         credentials_json: ${{ secrets.GCP_SA_KEY }}
-        
+
     - name: Configure Docker for GCP Artifact Registry
       run: |
         gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev
-        
+
     - name: Build and push Docker image
       run: |
         cd experimental-apps/ai-front
         docker build -t ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/ai-experiment/${{ env.SERVICE_NAME }}:${{ github.sha }} .
         docker push ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/ai-experiment/${{ env.SERVICE_NAME }}:${{ github.sha }}
-        
+
     - name: Deploy to Cloud Run
       uses: google-github-actions/deploy-cloudrun@v2
       with:

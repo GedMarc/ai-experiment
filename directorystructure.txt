@@ -1,0 +1,100 @@
+ Volume in drive C has no label.
+ Volume Serial Number is 3CB1-3869
+
+ Directory of C:\Java\test\ai-experiment
+
+2025/07/01  18:46             1ÿ324 PACT.md
+2025/07/01  19:06                64 README.md
+               2 File(s)          1ÿ388 bytes
+
+ Directory of C:\Java\test\ai-experiment\apps\advanced-calculator
+
+2025/07/01  20:13             2ÿ606 backend-implementation.md
+2025/07/01  21:56             3ÿ146 currency-enhancement.md
+2025/07/01  22:00             4ÿ016 env-variables.md
+2025/07/01  20:13             2ÿ032 frontend-implementation.md
+2025/07/01  20:12             2ÿ067 guides.md
+2025/07/01  21:06             2ÿ706 openapi.md
+2025/07/01  20:11             2ÿ398 rules.md
+               7 File(s)         18ÿ971 bytes
+
+ Directory of C:\Java\test\ai-experiment\apps\basic-calculator
+
+2025/07/01  19:56             3ÿ060 backend-implementation.md
+2025/07/01  21:49             3ÿ492 env-variables.md
+2025/07/01  19:57             2ÿ690 frontend-implementation.md
+2025/07/01  19:55             2ÿ128 guide.md
+2025/07/01  20:51             2ÿ432 health.md
+2025/07/01  21:05             2ÿ742 openapi.md
+2025/07/01  19:54             2ÿ178 rules.md
+               7 File(s)         18ÿ722 bytes
+
+ Directory of C:\Java\test\ai-experiment\apps\experimental-ai-app
+
+2025/07/01  22:01             4ÿ335 env-variables.md
+2025/07/01  20:46             3ÿ267 experimental-app-backend-auth.md
+2025/07/01  20:33             3ÿ568 experimental-app-frontend-shell.md
+2025/07/01  19:49             3ÿ929 experimental-app-implementation.md
+2025/07/01  20:24             3ÿ568 frontend-implementation.md
+2025/07/01  20:52             2ÿ880 health.md
+2025/07/01  21:07             2ÿ992 openapi.md
+2025/07/02  12:36             4ÿ445 rules.md
+2025/07/02  12:42             4ÿ085 security-authentication.md
+               9 File(s)         33ÿ069 bytes
+
+ Directory of C:\Java\test\ai-experiment\guides
+
+2025/07/01  18:47               331 hibernate-upgrade.md
+2025/07/01  19:47             1ÿ232 integration-guide.md
+2025/07/01  19:46             3ÿ399 integration-tcp-evenetbus-bridge.md
+2025/07/01  18:47               550 postgres-client.md
+2025/07/01  18:47               299 vertx-upgrade.md
+               5 File(s)          5ÿ811 bytes
+
+ Directory of C:\Java\test\ai-experiment\implementation
+
+2025/07/01  18:48               341 ci-cd.md
+2025/07/01  19:13               452 database.md
+2025/07/01  18:54               465 health.md
+2025/07/01  18:54               453 metrics.md
+2025/07/01  20:50             3ÿ239 orchestration.md
+2025/07/01  18:49               251 security.md
+2025/07/01  18:54               349 tracing.md
+2025/07/01  19:34             4ÿ283 vertx-service-discovery.md
+               8 File(s)          9ÿ833 bytes
+
+ Directory of C:\Java\test\ai-experiment\implementation\terraform
+
+2025/07/01  21:33             6ÿ749 gcp-structure.md
+               1 File(s)          6ÿ749 bytes
+
+ Directory of C:\Java\test\ai-experiment\orchestration
+
+2025/07/01  21:48             4ÿ401 env-variables.md
+2025/07/02  12:44             2ÿ102 openapi-map.md
+               2 File(s)          6ÿ503 bytes
+
+ Directory of C:\Java\test\ai-experiment\rules
+
+2025/07/01  18:53               972 backend.md
+2025/07/01  18:47               390 configuration.md
+2025/07/01  18:46               397 dev-process.md
+2025/07/01  18:47               776 documentation.md
+2025/07/01  19:29             4ÿ538 Frontend-webcomponents-rules.md
+2025/07/01  18:46               395 frontend.md
+2025/07/01  18:46               569 infrastructure.md
+2025/07/01  20:10             2ÿ930 integration-vertx-web.md
+2025/07/01  20:47             3ÿ703 orchestration.md
+2025/07/01  18:46               329 security.md
+              10 File(s)         14ÿ999 bytes
+
+ Directory of C:\Java\test\ai-experiment\rules\specification
+
+2025/07/02  12:43             2ÿ994 openapi-guidelines.md
+2025/07/01  21:04             3ÿ943 openapi-implementation.md
+2025/07/01  21:01             4ÿ481 openapi.md
+               3 File(s)         11ÿ418 bytes
+
+     Total Files Listed:
+              54 File(s)        127ÿ463 bytes
+               0 Dir(s)  51ÿ995ÿ463ÿ680 bytes free

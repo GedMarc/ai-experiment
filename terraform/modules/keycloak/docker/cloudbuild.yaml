@@ -1,0 +1,24 @@
+steps:
+  # Build the Keycloak image
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [
+      'build',
+      '-t', '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/keycloak:latest',
+      '-f', 'Dockerfile',
+      '.'
+    ]
+    dir: 'terraform/modules/keycloak/docker'
+
+  # Push the image to Artifact Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [
+      'push',
+      '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/keycloak:latest'
+    ]
+
+substitutions:
+  _REGION: europe-west1
+  _ARTIFACT_REGISTRY_REPO: shared
+
+images:
+  - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/keycloak:latest'

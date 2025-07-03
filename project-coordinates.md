@@ -52,15 +52,50 @@ This document defines the foundational metadata, repository structure, GCP layou
 ### Identity
 
 * 🔐 **Keycloak is the identity provider.**
-* Hosted via Terraform on GCP (Cloud Run or Compute Engine depending on cost)
+* Hosted via Cloud Run, built using full Docker configuration
 * Realm: `ai-experiment`
-* URL: `https://auth.gedmarc.co.za/ai-experiment` (custom domain)
-* Uses Cloud Run **domain mapping (preview)** for public apps
-* Internal routing via private VPC connectors
+* URL: `https://auth.gedmarc.co.za/` (custom domain via Cloud Run domain mapping)
+* Uses PostgreSQL 17 (10GB) with Keycloak schema
+* Memory allocation: **2 GB**
+* Cloud Run CPU boost enabled for cold start reliability
+
+#### 🔧 Full Build + Run Image
+
+```Dockerfile
+FROM quay.io/keycloak/keycloak:latest AS builder
+
+# Enable health and metrics support
+ENV KC_HEALTH_ENABLED=true
+ENV KC_METRICS_ENABLED=true
+ENV KC_DB=postgres
+
+WORKDIR /opt/keycloak
+
+# Generate basic TLS cert (not for prod)
+RUN keytool -genkeypair -storepass password -storetype PKCS12 -keyalg RSA -keysize 2048 \
+  -dname "CN=server" -alias server -ext "SAN:c=DNS:localhost,IP:127.0.0.1" \
+  -keystore conf/server.keystore
+
+RUN /opt/keycloak/bin/kc.sh build
+
+FROM quay.io/keycloak/keycloak:latest
+COPY --from=builder /opt/keycloak/ /opt/keycloak/
+
+ENV KC_DB=postgres
+ENV KC_DB_URL=jdbc:postgresql://keycloak-db:5432/keycloak
+ENV KC_DB_USERNAME=keycloak
+ENV KC_DB_PASSWORD=change_me
+ENV KC_HOSTNAME=auth.gedmarc.co.za
+ENV KC_PROXY=edge
+ENV KC_HTTP_ENABLED=true
+ENV KC_FEATURES=token-exchange
+
+ENTRYPOINT ["/opt/keycloak/bin/kc.sh", "start"]
+```
 
 ---
 
-## 📆 Event & Messaging Structure
+## 🗖️ Event & Messaging Structure
 
 * All internal service-to-service events will use **CloudEvents v1.0** compliant structure
 * Format: `application/cloudevents+json`
@@ -94,7 +129,7 @@ The following CloudEvents extensions are supported and required for internal tra
 
 ---
 
-## 📆 Maven Build Conventions
+## 🗖️ Maven Build Conventions
 
 | Field              | Value                              |
 | ------------------ | ---------------------------------- |
@@ -123,5 +158,3 @@ The following CloudEvents extensions are supported and required for internal tra
 * Domain mapping will be applied *after* Cloud Run deployment completes successfully
 * Internal app communication must be secure, use VPC or Auth headers, and rely on CloudEvent format
 * CloudEvents must include traceability extensions for platform observability
-
----

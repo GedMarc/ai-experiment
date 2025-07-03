@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>za.co.ai.experiment</groupId>
+        <artifactId>ai-experiment</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+        <relativePath>../../pom.xml</relativePath>
+    </parent>
+
+    <artifactId>advanced-calculator-runtime</artifactId>
+    <name>AI Experiment - Advanced Calculator Runtime</name>
+    <description>JLink runtime image for the Advanced Calculator application</description>
+    <packaging>jlink</packaging>
+
+    <version>1.0.0-SNAPSHOT</version>
+
+    <dependencies>
+        <!-- Core app module -->
+        <dependency>
+            <groupId>za.co.ai.experiment</groupId>
+            <artifactId>advanced-calculator</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jlink-plugin</artifactId>
+                <version>3.2.0</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <addModules>
+                        <addModule>za.co.ai.experiment.advanced.calculator</addModule>
+                    </addModules>
+                    <launcher>advanced-calculator=za.co.ai.experiment.advanced.calculator/za.co.ai.experiment.advanced.calculator.Main</launcher>
+                    <stripDebug>true</stripDebug>
+                    <noHeaderFiles>true</noHeaderFiles>
+                    <noManPages>true</noManPages>
+                    <outputDirectory>${project.build.directory}/jlink-image</outputDirectory>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+
+    <repositories>
+        <repository>
+            <id>github</id>
+            <url>https://maven.pkg.github.com/GedMarc/ai-experiment</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+</project>

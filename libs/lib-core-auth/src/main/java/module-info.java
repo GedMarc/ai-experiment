@@ -6,7 +6,7 @@
 module za.co.ai.experiment.libcoreauth {
     // Export the API packages
     exports za.co.ai.experiment.libcoreauth;
-    
+
     // For testing
     opens za.co.ai.experiment.libcoreauth to org.junit.platform.commons;
 }

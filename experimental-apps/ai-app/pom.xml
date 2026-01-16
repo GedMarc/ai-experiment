@@ -71,7 +71,7 @@
         <dependency>
             <groupId>io.vertx</groupId>
             <artifactId>vertx-core</artifactId>
-            <version>5.0.0</version>
+            <version>5.0.7</version>
         </dependency>
 
         <!-- Jakarta Inject -->
